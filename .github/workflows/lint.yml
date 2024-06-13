@@ -14,10 +14,7 @@ jobs:
       id: cpython3
       with:
         python-version: ${{ matrix.python-version }}
-        cache: pip
-        cache-dependency-path: setup.py
-    - run: echo '${{ steps.cpython3.outputs.python-version }}'
-    - run: pip install -e '.[lint]'
+    - run: pip install ruff
     - run: ruff check .
     - name: Run pytype if not on 3.12
       run: |
