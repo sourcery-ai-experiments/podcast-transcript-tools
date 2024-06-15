@@ -16,19 +16,22 @@ def _ts_to_secs(time_string: str) -> float:
 # https://github.com/Podcastindex-org/podcast-namespace/blob/main/transcripts/transcripts.md
 def _html_to_list(soup: BeautifulSoup) -> list[dict]:
     blocks = []
-    soup.children.
-    if match := srt_block.search(block):
-        start = _ts_to_secs(match[1])
-        end = _ts_to_secs(match[2])
-        body = match[4].strip().replace("\n", " ")
-
-        return {"startTime": start, "endTime": end, "body": body}
-
+    # TODO: detect cite/time for conformance to spec.
+    for child in soup.children:
+        if child.name == "p":
+            blocks.append(
+                {
+                    "startTime": 0.0,
+                    "endTime": 0.0,
+                    "body": child.text,
+                }
+            )
+    return blocks
     return None
 
 
 def html_to_podcast_dict(html_string: str) -> dict:
-    soup = BeautifulSoup(html_string, 'html.parser')
+    soup = BeautifulSoup(html_string, "html.parser")
 
     return {
         "version": "1.0.0",
