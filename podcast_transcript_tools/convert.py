@@ -8,13 +8,13 @@ def list_files(directory: str) -> list[str]:
     for dirpath, dirnames, filenames in os.walk(directory):
         for filename in filenames:
             file_paths.append(
-                os.path.join(dirpath, filename)
+                os.path.join(dirpath, filename),
             )  # Append the file name to the full path
     return file_paths
 
 
 def read_first_line(file_path: str) -> str:
-    with open(file_path, "r") as file:
+    with open(file_path) as file:
         return file.readline()
 
 
@@ -49,7 +49,7 @@ def extract_file_types_from_name(
 def main(transcript_directory):
     file_paths = list_files(transcript_directory)
     vtt_files, srt_files, html_files, unknown_files = extract_file_types_from_name(
-        file_paths
+        file_paths,
     )
     # Enumerate first_lines and indentify any files matching patterns
     first_lines = read_files_in_parallel(unknown_files)
