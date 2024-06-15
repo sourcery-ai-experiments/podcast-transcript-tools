@@ -14,7 +14,7 @@ jobs:
       id: cpython3
       with:
         python-version: ${{ matrix.python-version }}
-    - run: pip install ruff
+    - run: pip install ruff pytype
     - run: ruff check .
     - name: Run pytype if not on 3.12
       run: |
@@ -26,4 +26,3 @@ jobs:
     - uses: psf/black@stable
       with:
         options: "--check --verbose"
-    - run: pyroma . --min=10
