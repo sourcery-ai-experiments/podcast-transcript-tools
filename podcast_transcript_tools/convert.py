@@ -11,7 +11,7 @@ def list_files(directory: str) -> list[str]:
     for root, _, filenames in walk(directory):
         dirpath = Path(root)
         file_paths.extend(
-            dirpath / filename
+            str(dirpath / filename)
             for filename in filenames
             if not filename.startswith(".")
             and not filename.endswith(".pdf")
@@ -22,7 +22,7 @@ def list_files(directory: str) -> list[str]:
 
 def read_first_line(file_path: str) -> str:
     try:
-        with Path.open(file_path) as file:
+        with Path(file_path).open() as file:
             return file.readline()
     except ValueError as e:
         e.add_note(file_path)
