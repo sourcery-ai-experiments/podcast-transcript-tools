@@ -93,7 +93,8 @@ def main(transcript_directory: str) -> None:
     logger.info(f"Found {len(srt_files)} SRT files")
     logger.info(f"Found {len(html_files)} HTML files")
     logger.info(f"Found {len(json_files)} JSON files")
-    logger.warning(f"Unknown: {unknown_pods}")
+    if len(unknown_pods) > 0:
+        logger.warning(f"Unknown: {unknown_pods}")
 
 
 if __name__ == "__main__":

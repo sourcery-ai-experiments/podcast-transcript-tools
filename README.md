@@ -15,5 +15,6 @@ cd podcast-transcript-tools
 python3 -m venv venv
 source venv/bin/activate
 pip install -r requirements.txt
+# Replace with the actual path to your transcript files
 python podcast_transcript_tools/convert.py ~/Downloads/overcast-to-sqlite/archive/transcripts
 ```

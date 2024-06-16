@@ -1,7 +1,7 @@
 import json
 from pathlib import Path
 
-from loguru import logger
+from loguru import logger  # type: ignore[import-not-found]
 
 
 def json_file_to_json_file(origin_file: str, destination_file: str) -> None:
