@@ -3,11 +3,11 @@ from os import walk
 from pathlib import Path
 from sys import argv
 
-from loguru import logger
+from loguru import logger  # type: ignore[import-not-found]
 
 
 def list_files(directory: str) -> list[str]:
-    file_paths = []  # List to store file paths
+    file_paths: list[str] = []  # List to store file paths
     for root, _, filenames in walk(directory):
         dirpath = Path(root)
         file_paths.extend(

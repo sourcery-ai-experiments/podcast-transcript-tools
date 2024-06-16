@@ -1,7 +1,7 @@
 import json
 from pathlib import Path
 
-import webvtt
+import webvtt  # type: ignore[import-not-found]
 
 
 def vtt_to_podcast_dict(vtt: webvtt.WebVTT) -> dict:
