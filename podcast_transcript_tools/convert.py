@@ -82,21 +82,23 @@ def main(transcript_directory: str) -> None:
             html_files.append(unknown_files[i])
         elif "{" in line:
             json_files.append(unknown_files[i])
-        # else:
-        #     print(f"Unknown file type: {unknown_files[i]}")
 
     known_files = vtt_files + srt_files + html_files + json_files
-    unknown_pods = [
+    unknown_pods = {
         file_name.split("/")[-2]
         for file_name in unknown_files
         if file_name not in known_files
-    ]
+    }
     logger.info(f"Found {len(vtt_files)} VTT files")
     logger.info(f"Found {len(srt_files)} SRT files")
     logger.info(f"Found {len(html_files)} HTML files")
     logger.info(f"Found {len(json_files)} JSON files")
-    logger.warning(f"Unknown: {set(unknown_pods)}")
+    if len(unknown_pods) > 0:
+        logger.warning(f"Unknown: {unknown_pods}")
 
 
 if __name__ == "__main__":
-    main(argv[1])
+    if len(argv) != 2:  # noqa: PLR2004
+        logger.error("Usage: python convert.py <transcript_directory>")
+    else:
+        main(argv[1])
