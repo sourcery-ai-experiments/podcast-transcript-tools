@@ -1,11 +1,13 @@
 from functools import reduce
 from json import dumps
 from pathlib import Path
-from typing import Iterable
+from typing import TYPE_CHECKING
 
-from bs4 import BeautifulSoup
-from bs4 import PageElement
+from bs4 import BeautifulSoup, PageElement
 from loguru import logger  # type: ignore[import-not-found]
+
+if TYPE_CHECKING:
+    from collections.abc import Iterable
 
 
 def _ts_to_secs(time_string: str) -> float:
