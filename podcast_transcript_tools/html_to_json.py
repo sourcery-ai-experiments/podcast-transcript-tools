@@ -15,7 +15,8 @@ def _ts_to_secs(time_string: str) -> float:
 # https://github.com/Podcastindex-org/podcast-namespace/blob/main/transcripts/transcripts.md#html
 def _html_to_list(soup: BeautifulSoup) -> list[dict]:
     blocks = [{}]
-    for child in soup.body.children or soup.children:
+    children = soup.body.children if soup.body else soup.children
+    for child in children:
         if child.name == "cite":
             if "speaker" not in blocks[-1]:
                 blocks[-1]["speaker"] = child.text.replace(":", "").strip()

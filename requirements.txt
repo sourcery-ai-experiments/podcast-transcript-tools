@@ -4,6 +4,7 @@ certifi==2024.6.2
 charset-normalizer==3.3.2
 click==8.1.7
 idna==3.7
+loguru==0.7.2
 more-itertools==10.3.0
 mypy-extensions==1.0.0
 objective-sdk==4.0.7
