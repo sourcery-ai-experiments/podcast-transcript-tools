@@ -25,7 +25,7 @@ def _srt_block_to_dict(block: str) -> dict | None:
 
         return {"startTime": start, "endTime": end, "body": body}
 
-    raise InvalidSrtError
+    raise InvalidSrtError(block)
 
 
 def srt_to_podcast_dict(srt_string: str) -> dict:
