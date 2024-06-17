@@ -6,6 +6,8 @@ from typing import TYPE_CHECKING
 from bs4 import BeautifulSoup, PageElement
 from loguru import logger  # type: ignore[import-not-found]
 
+from podcast_transcript_tools.errors import InvalidHtmlError, NoTranscriptFoundError
+
 if TYPE_CHECKING:
     from collections.abc import Iterable
 
@@ -39,14 +41,17 @@ def _html_to_list(soup: BeautifulSoup) -> list[dict]:
                         "startTime": _ts_to_secs(child.text.strip()),
                     },
                 )
-        elif child.name == "p":  # type: ignore[attr-defined]
-            blocks[-1]["body"] = child.text.strip()
-        else:
-            logger.warning(f"Unknown tag: {child.name}")  # type: ignore[attr-defined]
+        elif child.name == "p" and (stripped := child.text.strip()):  # type: ignore[attr-defined]
+            blocks[-1]["body"] = stripped
+    if len(blocks) == 1:
+        raise NoTranscriptFoundError
     return blocks
 
 
 def html_to_podcast_dict(html_string: str) -> dict:
+    if "<cite>" not in html_string and "<time>" not in html_string:
+        raise InvalidHtmlError
+
     soup = BeautifulSoup(html_string, "html.parser")
 
     return {
@@ -57,12 +62,15 @@ def html_to_podcast_dict(html_string: str) -> dict:
 
 def html_file_to_json_file(html_file: str, json_file: str) -> None:
     html_string = Path(html_file).read_text()
-    if "<cite>" not in html_string and "<time>" not in html_string:
-        logger.error(f"No <cite> or <time> tags found in {html_file}")
+    try:
+        transcript_dict = html_to_podcast_dict(html_string)
+    except InvalidHtmlError:
+        logger.error(f"No <cite> or <time> tags found in HTML file: {html_file}")
         return
+    except NoTranscriptFoundError as e:
+        e.add_note(html_file)
+        raise
+
     Path(json_file).write_text(
-        data=dumps(
-            html_to_podcast_dict(html_string),
-            indent=4,
-        ),
+        data=dumps(transcript_dict, indent=4),
     )
