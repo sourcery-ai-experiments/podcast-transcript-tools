@@ -4,7 +4,6 @@ from pathlib import Path
 from typing import TYPE_CHECKING
 
 from bs4 import BeautifulSoup, PageElement
-from loguru import logger  # type: ignore[import-not-found]
 
 from podcast_transcript_tools.errors import InvalidHtmlError, NoTranscriptFoundError
 
@@ -64,9 +63,9 @@ def html_file_to_json_file(html_file: str, json_file: str) -> None:
     html_string = Path(html_file).read_text()
     try:
         transcript_dict = html_to_podcast_dict(html_string)
-    except InvalidHtmlError:
-        logger.error(f"No <cite> or <time> tags found in HTML file: {html_file}")
-        return
+    except InvalidHtmlError as e:
+        e.add_note(html_file)
+        raise
     except NoTranscriptFoundError as e:
         e.add_note(html_file)
         raise
