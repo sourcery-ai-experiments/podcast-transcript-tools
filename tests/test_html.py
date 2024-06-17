@@ -10,6 +10,10 @@ def test__ts_to_secs():
     assert _ts_to_secs("00:00:00") == 0
     assert _ts_to_secs("01:31") == 91
     assert _ts_to_secs("02:01:31") == 7291
+    with pytest.raises(ValueError):
+        _ts_to_secs("abc")
+    with pytest.raises(ValueError):
+        _ts_to_secs("")
 
 
 def test_html_to_podcast_dict_no_time():
@@ -48,3 +52,8 @@ def test_html_to_podcast_dict_no_cite_or_time():
     html_string = "<html><body><p>Just a paragraph</p></body></html>"
     with pytest.raises(InvalidHtmlError):
         html_to_podcast_dict(html_string)
+
+
+def test_html_to_podcast_dict_empty():
+    with pytest.raises(InvalidHtmlError):
+        html_to_podcast_dict("")

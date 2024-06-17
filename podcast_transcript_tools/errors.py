@@ -1,7 +1,7 @@
 class InvalidHtmlError(ValueError):
     """The HTML does not conform to the expected format of a valid transcript.
 
-    Specifically, when there are not <cite> or <time> tags in the file.
+    Specifically, when there are no <cite> or <time> tags in the file.
     """
 
     def __init__(self) -> None:
