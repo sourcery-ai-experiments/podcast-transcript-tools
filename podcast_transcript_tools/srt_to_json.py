@@ -7,20 +7,20 @@ from podcast_transcript_tools.errors import InvalidSrtError
 srt_block = re.compile(r"(\d+:\d+:\d+,\d+) --> (\d+:\d+:\d+,\d+)(\s*)(.*)", flags=re.S)
 
 
-def _ts_to_secs(time_string: str) -> float:
+def _mts_to_secs_float(time_string: str) -> float:
     hours, minutes, seconds, milliseconds = map(
         int,
-        time_string.replace(",", ":").split(":"),
+        time_string.replace(",", ":").replace(".", ":").split(":"),
     )
-    return (hours * 3600) + (minutes * 60) + seconds + (milliseconds / 1000)
+    return round((hours * 3600) + (minutes * 60) + seconds + (milliseconds / 1000), 3)
 
 
 # See spec at:
 # https://github.com/Podcastindex-org/podcast-namespace/blob/main/transcripts/transcripts.md
 def _srt_block_to_dict(block: str) -> dict | None:
     if match := srt_block.search(block):
-        start = _ts_to_secs(match[1])
-        end = _ts_to_secs(match[2])
+        start = _mts_to_secs_float(match[1])
+        end = _mts_to_secs_float(match[2])
         body = match[4].strip().replace("\n", " ")
 
         return {"startTime": start, "endTime": end, "body": body}
