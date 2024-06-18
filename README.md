@@ -26,5 +26,4 @@ python podcast_transcript_tools/convert.py ~/overcast-to-sqlite/archive/fixtures
 ```
 
 ## Authors
-
 - [Harold Martin](https://www.linkedin.com/in/harold-martin-98526971/) - harold.martin at gmail

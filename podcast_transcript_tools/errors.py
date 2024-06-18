@@ -40,4 +40,4 @@ class InvalidVttError(TranscriptConversionError):
     """Failed to parse WebVTT."""
 
     def __init__(self) -> None:
-        super().__init__(f"The provided VTT could not be parsed.")
+        super().__init__("The provided VTT could not be parsed.")
