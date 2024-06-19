@@ -3,24 +3,23 @@ from pathlib import Path
 import pytest
 
 from podcast_transcript_tools.errors import InvalidSrtError
-from podcast_transcript_tools.srt_to_json import _ts_to_secs, srt_to_podcast_dict
+from podcast_transcript_tools.srt_to_json import _mts_to_secs_float, srt_to_podcast_dict
 
 
-def test__ts_to_secs():
-    assert _ts_to_secs("00:00:00,0") == 0
-    assert _ts_to_secs("00:01:31,123") == 91.123
-    assert _ts_to_secs("23:59:59,999") == 86399.999
-    assert _ts_to_secs("02:01:31,0") == 7291
+def test__mts_to_secs_float():
+    assert _mts_to_secs_float("00:00:00,0") == 0
+    assert _mts_to_secs_float("00:01:31,123") == 91.123
+    assert _mts_to_secs_float("23:59:59,999") == 86399.999
+    assert _mts_to_secs_float("02:01:31,0") == 7291
     with pytest.raises(ValueError):
-        _ts_to_secs("abc")
+        _mts_to_secs_float("abc")
     with pytest.raises(ValueError):
-        _ts_to_secs("")
+        _mts_to_secs_float("")
 
 
 def test_srt_to_podcast_dict():
     srt_string = Path("tests/fixtures/Bloat.srt").read_text()
     transcript_dict = srt_to_podcast_dict(srt_string)
-    print(transcript_dict)
     assert transcript_dict["version"] == "1.0.0"
     assert len(transcript_dict["segments"]) == 724
     assert (
