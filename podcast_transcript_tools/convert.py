@@ -5,15 +5,21 @@ from sys import argv
 
 from loguru import logger  # type: ignore[import-not-found]
 
+from .html_to_json import html_file_to_json_file
+from .json_to_json import json_file_to_json_file
+from .srt_to_json import srt_file_to_json_file
+from .vtt_to_json import vtt_file_to_json_file
 
-def list_files(directory: str) -> list[str]:
+
+def list_files(directory: str, ignore: list[str]) -> list[str]:
     file_paths: list[str] = []  # List to store file paths
     for root, _, filenames in walk(directory):
         dirpath = Path(root)
         file_paths.extend(
             str(dirpath / filename)
             for filename in filenames
-            if not filename.startswith(".")
+            if not filename in ignore
+            and not filename.startswith(".")
             and not filename.endswith(".pdf")
             and not filename.endswith(".octet-stream")
         )
@@ -60,8 +66,15 @@ def extract_file_types_from_name(
     return vtt_files, srt_files, html_files, json_files, unknown_files
 
 
-def main(transcript_directory: str) -> None:
-    file_paths = list_files(transcript_directory)
+def _destination_path(file_path: str, destination_dir: str) -> str:
+    file_path = Path(file_path)
+    parent = Path(destination_dir) / file_path.parts[-2]
+    parent.mkdir(parents=True, exist_ok=True)
+    return str(parent / (".".join(file_path.parts[-1].split(".")[:-1]) + ".json"))
+
+
+def main(transcript_path: str, destination_path: str, ignore: list[str]) -> None:
+    file_paths = list_files(transcript_path, ignore)
     (
         vtt_files,
         srt_files,
@@ -95,10 +108,28 @@ def main(transcript_directory: str) -> None:
     logger.info(f"Found {len(json_files)} JSON files")
     if len(unknown_pods) > 0:
         logger.warning(f"Unknown: {unknown_pods}")
+    for vtt_file in vtt_files:
+        vtt_file_to_json_file(vtt_file, _destination_path(vtt_file, destination_path))
+    for srt_file in srt_files:
+        srt_file_to_json_file(srt_file, _destination_path(srt_file, destination_path))
+    for html_file in html_files:
+        html_file_to_json_file(
+            html_file, _destination_path(html_file, destination_path)
+        )
+    for json_file in json_files:
+        json_file_to_json_file(
+            json_file, _destination_path(json_file, destination_path)
+        )
 
 
 if __name__ == "__main__":
-    if len(argv) != 2:  # noqa: PLR2004
-        logger.error("Usage: python convert.py <transcript_directory>")
+    if len(argv) < 4:  # noqa: PLR2004
+        logger.error(
+            "Usage: python convert.py <transcript source directory> <output directory>"
+        )
     else:
-        main(argv[1])
+        if len(argv) == 3:
+            ignore = []
+        else:
+            ignore = Path(argv[3]).read_text().split("\n")
+        main(transcript_path=argv[1], destination_path=argv[2], ignore=ignore)

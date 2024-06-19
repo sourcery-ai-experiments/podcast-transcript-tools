@@ -22,7 +22,7 @@ python3 -m venv venv
 source venv/bin/activate
 pip install -r requirements.txt
 # Replace with the actual path to your transcript files
-python podcast_transcript_tools/convert.py ~/overcast-to-sqlite/archive/fixtures
+python -m podcast_transcript_tools.convert ~/Downloads/overcast-to-sqlite/archive/transcripts converted/
 ```
 
 ## Authors
