@@ -33,6 +33,16 @@ def test_srt_to_podcast_dict():
     assert transcript_dict["segments"][-1]["endTime"] == 2174.920
 
 
+def test_srt_to_podcast_dict_with_extra_whitespace():
+    srt_string = Path("tests/fixtures/I Quit My Job.srt").read_text()
+    transcript_dict = srt_to_podcast_dict(srt_string)
+    assert (
+        transcript_dict["segments"][0]["body"]
+        == "Welcome to another episode of the map escaping podcast."
+    )
+    assert transcript_dict["segments"][-1]["body"] == "Bye."
+
+
 def test_srt_to_podcast_dict_invalid():
     with pytest.raises(InvalidSrtError):
         srt_to_podcast_dict("whatever")
