@@ -29,9 +29,13 @@ def _srt_block_to_dict(block: str) -> dict | None:
 
 
 def srt_to_podcast_dict(srt_string: str) -> dict:
+    blocks = [
+        item for item in srt_string.split("\n\n") if not item.isspace() and item != ""
+    ]
+
     return {
         "version": "1.0.0",
-        "segments": list(map(_srt_block_to_dict, srt_string.split("\n\n"))),
+        "segments": list(map(_srt_block_to_dict, blocks)),
     }
 
 

@@ -43,7 +43,7 @@ def _read_files_in_parallel(file_paths: list[str]) -> list[str]:
 
 
 def _identify_file_types(
-    file_paths: str,
+    file_paths: list[str],
 ) -> tuple[list[str], list[str], list[str], list[str], set[str]]:
     (
         vtt_files,
