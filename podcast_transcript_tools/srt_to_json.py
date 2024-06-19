@@ -1,6 +1,8 @@
-import json
 import re
+from json import dumps
 from pathlib import Path
+
+from podcast_transcript_tools.errors import InvalidSrtError
 
 srt_block = re.compile(r"(\d+:\d+:\d+,\d+) --> (\d+:\d+:\d+,\d+)(\s*)(.*)", flags=re.S)
 
@@ -23,22 +25,24 @@ def _srt_block_to_dict(block: str) -> dict | None:
 
         return {"startTime": start, "endTime": end, "body": body}
 
-    return None
+    raise InvalidSrtError(block)
 
 
 def srt_to_podcast_dict(srt_string: str) -> dict:
     return {
         "version": "1.0.0",
-        "segments": map(_srt_block_to_dict, srt_string.split("\n\n")),
+        "segments": list(map(_srt_block_to_dict, srt_string.split("\n\n"))),
     }
 
 
 def srt_file_to_json_file(srt_file: str, json_file: str) -> None:
+    srt_string = Path(srt_file).read_text()
+    try:
+        transcript_dict = srt_to_podcast_dict(srt_string)
+    except InvalidSrtError as e:
+        e.add_note(srt_file)
+        raise
+
     Path(json_file).write_text(
-        data=json.dumps(
-            srt_to_podcast_dict(
-                srt_string=Path(srt_file).read_text(),
-            ),
-            indent=4,
-        ),
+        data=dumps(transcript_dict, indent=4),
     )
