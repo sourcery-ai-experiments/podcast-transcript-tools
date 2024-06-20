@@ -4,7 +4,9 @@ from pathlib import Path
 
 from podcast_transcript_tools.errors import InvalidSrtError
 
-srt_block = re.compile(r"(\d+:\d+:\d+[,.]\d+)\s*-->\s*(\d+:\d+:\d+[,.]\d+)(\s*)(.*)", flags=re.S)
+srt_block = re.compile(
+    r"(\d+:\d+:\d+[,.]\d+)\s*-->\s*(\d+:\d+:\d+[,.]\d+)(\s*)(.*)", flags=re.S,
+)
 
 
 def _mts_to_secs_float(time_string: str) -> float:
@@ -15,7 +17,7 @@ def _mts_to_secs_float(time_string: str) -> float:
     return round((hours * 3600) + (minutes * 60) + seconds + (milliseconds / 1000), 3)
 
 
-def _is_int(s):
+def _is_int(s: str) -> bool:
     try:
         int(s)
     except ValueError:

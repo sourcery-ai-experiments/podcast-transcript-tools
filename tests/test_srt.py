@@ -46,10 +46,7 @@ def test_srt_to_podcast_dict_with_extra_whitespace():
 def test_srt_to_podcast_dict_with_missing_whitespace():
     srt_string = Path("tests/fixtures/AI Autocomplete for QGIS.srt").read_text()
     transcript_dict = srt_to_podcast_dict(srt_string)
-    assert (
-        transcript_dict["segments"][0]["body"]
-        == "Hi,Brendan.Welcometothepodcast."
-    )
+    assert transcript_dict["segments"][0]["body"] == "Hi,Brendan.Welcometothepodcast."
     assert transcript_dict["segments"][-1]["body"] == "Thanks."
 
 

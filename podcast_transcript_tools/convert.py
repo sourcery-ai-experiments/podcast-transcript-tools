@@ -1,3 +1,4 @@
+import sys
 from os import walk
 from pathlib import Path
 from sys import argv
@@ -65,7 +66,7 @@ if __name__ == "__main__":
         logger.error(
             "Usage: convert <source directory> <output directory> <opt. ignore file>",
         )
-        exit(1)
+        sys.exit(1)
 
     transcript_ignore_path = Path.cwd() / ".transcriptignore"
     ignore = (
