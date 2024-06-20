@@ -43,6 +43,40 @@ def test_srt_to_podcast_dict_with_extra_whitespace():
     assert transcript_dict["segments"][-1]["body"] == "Bye."
 
 
+def test_srt_to_podcast_dict_with_missing_whitespace():
+    srt_string = Path("tests/fixtures/AI Autocomplete for QGIS.srt").read_text()
+    transcript_dict = srt_to_podcast_dict(srt_string)
+    assert (
+        transcript_dict["segments"][0]["body"]
+        == "Hi,Brendan.Welcometothepodcast."
+    )
+    assert transcript_dict["segments"][-1]["body"] == "Thanks."
+
+
+def test_srt_to_podcast_dict_with_period_ts():
+    srt_string = Path("tests/fixtures/Episode 17.srt").read_text()
+    transcript_dict = srt_to_podcast_dict(srt_string)
+    assert transcript_dict["segments"][0]["endTime"] == 5.0
+    assert (
+        transcript_dict["segments"][0]["body"]
+        == "I think in terms of news, what would be great to kick off with is Swift Server."
+    )
+    assert transcript_dict["segments"][-1]["endTime"] == 2882.360
+    assert transcript_dict["segments"][-1]["body"] == "Yeah."
+
+
+def test_srt_to_podcast_dict_with_something():
+    srt_string = Path("tests/fixtures/Yak Shaving with Tim Mitra.srt").read_text()
+    transcript_dict = srt_to_podcast_dict(srt_string)
+    assert transcript_dict["segments"][0]["endTime"] == 5.0
+    assert (
+        transcript_dict["segments"][0]["body"]
+        == "I think in terms of news, what would be great to kick off with is Swift Server."
+    )
+    assert transcript_dict["segments"][-1]["endTime"] == 2882.360
+    assert transcript_dict["segments"][-1]["body"] == "Yeah."
+
+
 def test_srt_to_podcast_dict_invalid():
     with pytest.raises(InvalidSrtError):
         srt_to_podcast_dict("whatever")

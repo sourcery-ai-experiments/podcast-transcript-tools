@@ -61,14 +61,21 @@ def main(transcript_path: str, destination_path: str, ignore: list[str]) -> None
 
 
 if __name__ == "__main__":
-    if len(argv) < 4:  # noqa: PLR2004
+    if len(argv) < 3:  # noqa: PLR2004
         logger.error(
-            "Usage: python convert.py <transcript source directory> <output directory>",
+            "Usage: convert <source directory> <output directory> <opt. ignore file>",
         )
-    else:
-        ignore = (
+        exit(1)
+
+    transcript_ignore_path = Path.cwd() / ".transcriptignore"
+    ignore = (
+        (
             []
-            if len(argv) == 3  # noqa: PLR2004
-            else Path(argv[3]).read_text().split("\n")
+            if not transcript_ignore_path.exists()
+            else transcript_ignore_path.read_text().split("\n")
         )
-        main(transcript_path=argv[1], destination_path=argv[2], ignore=ignore)
+        if len(argv) == 3  # noqa: PLR2004
+        else Path(argv[3]).read_text().split("\n")
+    )
+    Path(argv[2]).mkdir(parents=True, exist_ok=True)
+    main(transcript_path=argv[1], destination_path=argv[2], ignore=ignore)

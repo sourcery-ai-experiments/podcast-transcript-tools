@@ -4,7 +4,7 @@ from pathlib import Path
 
 from podcast_transcript_tools.errors import InvalidSrtError
 
-srt_block = re.compile(r"(\d+:\d+:\d+,\d+) --> (\d+:\d+:\d+,\d+)(\s*)(.*)", flags=re.S)
+srt_block = re.compile(r"(\d+:\d+:\d+[,.]\d+)\s*-->\s*(\d+:\d+:\d+[,.]\d+)(\s*)(.*)", flags=re.S)
 
 
 def _mts_to_secs_float(time_string: str) -> float:
@@ -13,6 +13,15 @@ def _mts_to_secs_float(time_string: str) -> float:
         time_string.replace(",", ":").replace(".", ":").split(":"),
     )
     return round((hours * 3600) + (minutes * 60) + seconds + (milliseconds / 1000), 3)
+
+
+def _is_int(s):
+    try:
+        int(s)
+    except ValueError:
+        return False
+    else:
+        return True
 
 
 # See spec at:
@@ -24,7 +33,9 @@ def _srt_block_to_dict(block: str) -> dict | None:
         body = match[4].strip().replace("\n", " ")
 
         return {"startTime": start, "endTime": end, "body": body}
-
+    elif len(block) > 1 and _is_int(block[:2]):
+        # TOD0: append body to previous
+        raise InvalidSrtError(block)
     raise InvalidSrtError(block)
 
 
