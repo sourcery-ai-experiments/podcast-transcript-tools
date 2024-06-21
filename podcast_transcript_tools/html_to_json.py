@@ -1,3 +1,4 @@
+import re
 from functools import reduce
 from json import dumps
 from pathlib import Path
@@ -9,6 +10,10 @@ from podcast_transcript_tools.errors import InvalidHtmlError, NoTranscriptFoundE
 
 if TYPE_CHECKING:
     from collections.abc import Iterable
+
+
+_p_ts = re.compile(r"<p>\s*(\d+:)?\d+:\d+\s*</p>")
+_ts = re.compile(r"^\s*(\d+:)?\d+:\d+\s*$")
 
 
 def _ts_to_secs(time_string: str) -> float:
@@ -41,17 +46,27 @@ def _html_to_list(soup: BeautifulSoup) -> list[dict]:
                     },
                 )
         elif child.name == "p" and (stripped := child.text.strip()):  # type: ignore[attr-defined]
-            blocks[-1]["body"] = stripped
-    if len(blocks) == 1:
+            if _ts.match(stripped):
+                if "startTime" not in blocks[-1]:
+                    blocks[-1]["startTime"] = _ts_to_secs(stripped)
+                else:
+                    blocks.append(
+                        {
+                            "startTime": _ts_to_secs(stripped),
+                        },
+                    )
+            else:
+                blocks[-1]["body"] = stripped
+    if blocks[0] == {}:
         raise NoTranscriptFoundError
     return blocks
 
 
 def html_to_podcast_dict(html_string: str) -> dict:
-    if "<cite>" not in html_string and "<time>" not in html_string:
+    if "<cite>" in html_string or "<time>" in html_string or _p_ts.match(html_string):
+        soup = BeautifulSoup(html_string, "html.parser")
+    else:
         raise InvalidHtmlError
-
-    soup = BeautifulSoup(html_string, "html.parser")
 
     return {
         "version": "1.0.0",
@@ -67,6 +82,9 @@ def html_file_to_json_file(html_file: str, json_file: str) -> None:
         e.add_note(html_file)
         raise
     except NoTranscriptFoundError as e:
+        e.add_note(html_file)
+        raise
+    except ValueError as e:
         e.add_note(html_file)
         raise
 

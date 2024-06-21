@@ -16,6 +16,13 @@ class InvalidHtmlError(TranscriptConversionError):
         super().__init__("The provided HTML file is not a valid transcript.")
 
 
+class InvalidXmlError(TranscriptConversionError):
+    """The XML does not conform to http://podlove.org/simple-transcripts ."""
+
+    def __init__(self) -> None:
+        super().__init__("The provided XML file is not a valid transcript.")
+
+
 class NoTranscriptFoundError(TranscriptConversionError):
     """Failed to locate transcript blocks in the provided source.
 
