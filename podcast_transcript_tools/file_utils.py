@@ -67,7 +67,7 @@ def _identify_file_types(
             srt_files.append(unknown_files[i])
         elif "<" in line:
             html_files.append(unknown_files[i])
-        elif "{" in line:
+        elif "{" in line and "rtf" not in line:
             json_files.append(unknown_files[i])
     known_files = vtt_files + srt_files + html_files + json_files
     unknown_pods = {

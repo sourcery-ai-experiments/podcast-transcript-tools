@@ -67,7 +67,7 @@ def main(transcript_path: str, destination_path: str, ignore: list[str]) -> None
             xml_file,
             _destination_path(xml_file, destination_path),
         )
-    logger.info("Finished HTML conversion")
+    logger.info("Finished XML conversion")
     for json_file in json_files:
         json_file_to_json_file(
             json_file,
