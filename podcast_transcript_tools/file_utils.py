@@ -59,7 +59,7 @@ def _identify_file_types(
     for i, line in enumerate(first_lines):
         if "WEBVTT" in line:
             vtt_files.append(unknown_files[i])
-        elif "1" in line:
+        elif "1" == line[0] or "-->" in line:
             srt_files.append(unknown_files[i])
         elif "<" in line:
             html_files.append(unknown_files[i])

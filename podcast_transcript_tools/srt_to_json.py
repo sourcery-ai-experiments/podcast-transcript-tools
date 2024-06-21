@@ -4,7 +4,11 @@ from pathlib import Path
 
 from podcast_transcript_tools.errors import InvalidSrtError
 
-srt_block = re.compile(r"(\d+:\d+:\d+,\d+) --> (\d+:\d+:\d+,\d+)(\s*)(.*)", flags=re.S)
+_srt_split = re.compile(r"\n\n\d*\n")
+_srt_block = re.compile(
+    r"(\d+:\d+:\d+[,.]\d+)\s*-->\s*(\d+:\d+:\d+[,.]\d+)(\s*)(.*)",
+    flags=re.DOTALL,
+)
 
 
 def _mts_to_secs_float(time_string: str) -> float:
@@ -18,7 +22,7 @@ def _mts_to_secs_float(time_string: str) -> float:
 # See spec at:
 # https://github.com/Podcastindex-org/podcast-namespace/blob/main/transcripts/transcripts.md
 def _srt_block_to_dict(block: str) -> dict | None:
-    if match := srt_block.search(block):
+    if match := _srt_block.search(block):
         start = _mts_to_secs_float(match[1])
         end = _mts_to_secs_float(match[2])
         body = match[4].strip().replace("\n", " ")
@@ -30,7 +34,9 @@ def _srt_block_to_dict(block: str) -> dict | None:
 
 def srt_to_podcast_dict(srt_string: str) -> dict:
     blocks = [
-        item for item in srt_string.split("\n\n") if not item.isspace() and item != ""
+        item
+        for item in _srt_split.split(srt_string)
+        if not item.isspace() and item != ""
     ]
 
     return {
