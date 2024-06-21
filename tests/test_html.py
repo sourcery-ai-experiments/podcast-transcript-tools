@@ -34,7 +34,6 @@ def test_html_to_podcast_dict_no_body():
         "tests/fixtures/Talking AI at OpenShift Commons Gathering in Raleigh.html",
     ).read_text()
     transcript_dict = html_to_podcast_dict(html_string)
-    print(transcript_dict)
     assert transcript_dict["version"] == "1.0.0"
     assert len(transcript_dict["segments"]) == 131
     assert (
@@ -52,6 +51,32 @@ def test_html_to_podcast_dict_no_cite_or_time():
     html_string = "<html><body><p>Just a paragraph</p></body></html>"
     with pytest.raises(InvalidHtmlError):
         html_to_podcast_dict(html_string)
+
+
+def test_html_to_podcast_dict_with_ts_in_p_tag():
+    html_string = Path(
+        "tests/fixtures/78 Exploring MCMC Sampler Algorithms, with Matt D. Hoffman.html",
+    ).read_text()
+    transcript_dict = html_to_podcast_dict(html_string)
+    assert len(transcript_dict["segments"]) == 104
+    assert (
+        transcript_dict["segments"][0]["body"]
+        == "Okay, I mean now, can you hear me well yes. Okay, can I hear you don't need to"
+    )
+    assert transcript_dict["segments"][0]["startTime"] == 119
+    assert transcript_dict["segments"][-1]["body"] == "Thank you. You too. Bye."
+    assert transcript_dict["segments"][-1]["startTime"] == 5254
+
+
+def test_html_to_podcast_dict_with_ts_looking_in_body():
+    html_string = Path(
+        "tests/fixtures/Tales from Manufacturing Shipping Rack 1.html",
+    ).read_text()
+    transcript_dict = html_to_podcast_dict(html_string)
+    assert transcript_dict["segments"][0]["speaker"] == "Speaker 1"
+    assert transcript_dict["segments"][0]["startTime"] == 0
+    assert transcript_dict["segments"][-1]["speaker"] == "Speaker 2"
+    assert transcript_dict["segments"][-1]["startTime"] == 5051
 
 
 def test_html_to_podcast_dict_empty():

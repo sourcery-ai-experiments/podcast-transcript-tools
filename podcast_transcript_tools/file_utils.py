@@ -4,11 +4,12 @@ from pathlib import Path
 
 def _extract_file_types_from_name(
     file_paths: list[str],
-) -> tuple[list[str], list[str], list[str], list[str], list[str]]:
+) -> tuple[list[str], list[str], list[str], list[str], list[str], list[str]]:
     srt_files = []
     vtt_files = []
     html_files = []
     json_files = []
+    xml_files = []
     unknown_files = []
 
     for file_path in file_paths:
@@ -20,9 +21,11 @@ def _extract_file_types_from_name(
             html_files.append(file_path)
         elif file_path.endswith(".json"):
             json_files.append(file_path)
+        elif file_path.endswith((".xml", ".xsl")):
+            xml_files.append(file_path)
         else:
             unknown_files.append(file_path)
-    return vtt_files, srt_files, html_files, json_files, unknown_files
+    return vtt_files, srt_files, html_files, json_files, xml_files, unknown_files
 
 
 def _read_first_line(file_path: str) -> str:
@@ -44,12 +47,13 @@ def _read_files_in_parallel(file_paths: list[str]) -> list[str]:
 
 def _identify_file_types(
     file_paths: list[str],
-) -> tuple[list[str], list[str], list[str], list[str], set[str]]:
+) -> tuple[list[str], list[str], list[str], list[str], list[str], set[str]]:
     (
         vtt_files,
         srt_files,
         html_files,
         json_files,
+        xml_files,
         unknown_files,
     ) = _extract_file_types_from_name(
         file_paths,
@@ -71,4 +75,4 @@ def _identify_file_types(
         for file_name in unknown_files
         if file_name not in known_files
     }
-    return html_files, json_files, srt_files, vtt_files, unknown_pods
+    return html_files, json_files, srt_files, vtt_files, xml_files, unknown_pods
