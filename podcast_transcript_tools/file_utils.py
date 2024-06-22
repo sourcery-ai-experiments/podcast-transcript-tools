@@ -1,6 +1,28 @@
 from collections.abc import Iterable
 from concurrent.futures import ThreadPoolExecutor
+from os import walk
 from pathlib import Path
+
+
+def _is_file_allowed(filename: str, ignore: list[str]) -> bool:
+    return (
+        filename not in ignore
+        and not filename.startswith(".")
+        and not filename.endswith(".pdf")
+        and not filename.endswith(".octet-stream")
+    )
+
+
+def list_files(directory: str, ignore: list[str]) -> list[str]:
+    file_paths: list[str] = []  # List to store file paths
+    for root, _, filenames in walk(directory):
+        dirpath = Path(root)
+        file_paths.extend(
+            str(dirpath / filename)
+            for filename in filenames
+            if _is_file_allowed(filename, ignore)
+        )
+    return file_paths
 
 
 def _extract_file_types_from_name(

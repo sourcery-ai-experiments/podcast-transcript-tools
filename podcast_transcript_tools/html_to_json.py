@@ -5,6 +5,7 @@ from pathlib import Path
 from typing import TYPE_CHECKING
 
 from bs4 import BeautifulSoup, PageElement
+from loguru import logger
 
 from podcast_transcript_tools.errors import InvalidHtmlError, NoTranscriptFoundError
 
@@ -79,8 +80,8 @@ def html_file_to_json_file(
     json_file: str,
     metadata: dict | None,
 ) -> None:
-    html_string = Path(html_file).read_text()
     try:
+        html_string = Path(html_file).read_text()
         transcript_dict = html_to_podcast_dict(html_string)
         if metadata:
             transcript_dict["metadata"] = metadata
@@ -93,6 +94,9 @@ def html_file_to_json_file(
     except ValueError as e:
         e.add_note(html_file)
         raise
+    except FileNotFoundError:
+        logger.error(f"File not found: {html_file}")
+        return
 
     Path(json_file).write_text(
         data=dumps(transcript_dict, indent=4),

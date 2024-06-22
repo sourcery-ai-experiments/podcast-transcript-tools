@@ -1,5 +1,4 @@
 import sys
-from os import walk
 from pathlib import Path
 from sys import argv
 
@@ -8,26 +7,11 @@ from loguru import logger  # type: ignore[import-not-found]
 from podcast_transcript_tools.database import list_files_from_db
 from podcast_transcript_tools.xml_to_json import xml_file_to_json_file
 
-from .file_utils import _identify_file_types
+from .file_utils import _identify_file_types, list_files
 from .html_to_json import html_file_to_json_file
 from .json_to_json import json_file_to_json_file
 from .srt_to_json import srt_file_to_json_file
 from .vtt_to_json import vtt_file_to_json_file
-
-
-def list_files(directory: str, ignore: list[str]) -> list[str]:
-    file_paths: list[str] = []  # List to store file paths
-    for root, _, filenames in walk(directory):
-        dirpath = Path(root)
-        file_paths.extend(
-            str(dirpath / filename)
-            for filename in filenames
-            if filename not in ignore
-            and not filename.startswith(".")
-            and not filename.endswith(".pdf")
-            and not filename.endswith(".octet-stream")
-        )
-    return file_paths
 
 
 def _destination_path(file_path: str, destination_dir: str) -> str:
@@ -42,7 +26,7 @@ def main(transcript_path: str, destination_path: str, ignore: list[str]) -> None
         file_paths, metadatas = list_files_from_db(transcript_path, ignore)
     else:
         metadatas = {}
-        file_paths = list_files(transcript_path, ignore)
+        file_paths = list_files(directory=transcript_path, ignore=ignore)
     html_files, json_files, srt_files, vtt_files, xml_files, unknown_pods = (
         _identify_file_types(
             file_paths,

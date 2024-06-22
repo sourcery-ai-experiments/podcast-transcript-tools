@@ -7,13 +7,13 @@ from podcast_transcript_tools.constants import (
     EPISODES_EXTENDED,
     FEED_TITLE,
     FEED_XML_URL,
-    FEEDS,
     FEEDS_EXTENDED,
     GUID,
     TITLE,
     TRANSCRIPT_DL_PATH,
     XML_URL,
 )
+from podcast_transcript_tools.file_utils import _is_file_allowed
 
 
 def _to_file_and_metadata(
@@ -42,13 +42,13 @@ def _select_transcript_paths(con: Connection) -> Iterable[tuple[str, dict[str, s
     select = (
         f"SELECT {TRANSCRIPT_DL_PATH}, {EPISODES_EXTENDED}.{TITLE},  "
         f"{EPISODES_EXTENDED}.{ENCLOSURE_URL}, {EPISODES_EXTENDED}.{GUID}, "
-        f"{FEEDS}.{TITLE},  {FEEDS}.{XML_URL}, "
+        f"{FEEDS_EXTENDED}.{TITLE},  {FEEDS_EXTENDED}.{XML_URL} "
         f"FROM {EPISODES_EXTENDED} "
     )
     where = f"WHERE {TRANSCRIPT_DL_PATH} IS NOT NULL"
     query = (
         f"{select} LEFT JOIN {FEEDS_EXTENDED} "
-        f"ON {EPISODES_EXTENDED}.{FEED_XML_URL} = {FEEDS}.{XML_URL} "
+        f"ON {EPISODES_EXTENDED}.{FEED_XML_URL} = {FEEDS_EXTENDED}.{XML_URL} "
         f"{where} "
     )
 
@@ -65,7 +65,7 @@ def list_files_from_db(
 
     with sqlite3.connect(db_path) as con:
         for file, data in _select_transcript_paths(con):
-            if file in ignore:
+            if not _is_file_allowed(filename=file.split("/")[-1], ignore=ignore):
                 continue
             files.append(file)
             metadatas[file] = data
