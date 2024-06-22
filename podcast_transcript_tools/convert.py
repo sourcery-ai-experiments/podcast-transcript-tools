@@ -5,6 +5,7 @@ from sys import argv
 
 from loguru import logger  # type: ignore[import-not-found]
 
+from podcast_transcript_tools.database import list_files_from_db
 from podcast_transcript_tools.xml_to_json import xml_file_to_json_file
 
 from .file_utils import _identify_file_types
@@ -37,7 +38,10 @@ def _destination_path(file_path: str, destination_dir: str) -> str:
 
 
 def main(transcript_path: str, destination_path: str, ignore: list[str]) -> None:
-    file_paths = list_files(transcript_path, ignore)
+    if transcript_path.endswith(".db"):
+        file_paths, metadatas = list_files_from_db(transcript_path, ignore)
+    else:
+        file_paths = list_files(transcript_path, ignore)
     html_files, json_files, srt_files, vtt_files, xml_files, unknown_pods = (
         _identify_file_types(
             file_paths,
@@ -79,12 +83,12 @@ def main(transcript_path: str, destination_path: str, ignore: list[str]) -> None
 if __name__ == "__main__":
     if len(argv) < 3:  # noqa: PLR2004
         logger.error(
-            "Usage: convert <source directory> <output directory> <opt. ignore file>",
+            "Usage: convert <source dir / db> <output directory> <opt. ignore file>",
         )
         sys.exit(1)
 
     transcript_ignore_path = Path.cwd() / ".transcriptignore"
-    ignore = (
+    ignore_list = (
         (
             []
             if not transcript_ignore_path.exists()
@@ -94,4 +98,4 @@ if __name__ == "__main__":
         else Path(argv[3]).read_text().split("\n")
     )
     Path(argv[2]).mkdir(parents=True, exist_ok=True)
-    main(transcript_path=argv[1], destination_path=argv[2], ignore=ignore)
+    main(transcript_path=argv[1], destination_path=argv[2], ignore=ignore_list)

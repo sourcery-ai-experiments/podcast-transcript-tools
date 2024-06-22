@@ -1,9 +1,10 @@
+from collections.abc import Iterable
 from concurrent.futures import ThreadPoolExecutor
 from pathlib import Path
 
 
 def _extract_file_types_from_name(
-    file_paths: list[str],
+    file_paths: Iterable[str],
 ) -> tuple[list[str], list[str], list[str], list[str], list[str], list[str]]:
     srt_files = []
     vtt_files = []
@@ -46,7 +47,7 @@ def _read_files_in_parallel(file_paths: list[str]) -> list[str]:
 
 
 def _identify_file_types(
-    file_paths: list[str],
+    file_paths: Iterable[str],
 ) -> tuple[list[str], list[str], list[str], list[str], list[str], set[str]]:
     (
         vtt_files,
