@@ -59,7 +59,7 @@ def list_files_from_db(
     db_path: str, ignore: list[str],
 ) -> tuple[list[str], dict[str, dict[str, str]]]:
     """List files from a database."""
-    con: Connection = sqlite3.connect(db_path)
+    with sqlite3.connect(db_path) as con:
     files = []
     metadatas = {}
     for file, data in _select_transcript_paths(con):
