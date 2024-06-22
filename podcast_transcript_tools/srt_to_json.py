@@ -45,10 +45,12 @@ def srt_to_podcast_dict(srt_string: str) -> dict:
     }
 
 
-def srt_file_to_json_file(srt_file: str, json_file: str) -> None:
+def srt_file_to_json_file(srt_file: str, json_file: str, metadata: dict | None) -> None:
     srt_string = Path(srt_file).read_text()
     try:
         transcript_dict = srt_to_podcast_dict(srt_string)
+        if metadata:
+            transcript_dict["metadata"] = metadata
     except InvalidSrtError as e:
         e.add_note(srt_file)
         raise

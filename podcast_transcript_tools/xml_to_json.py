@@ -46,10 +46,12 @@ def xml_to_podcast_dict(xml_string: str) -> dict:
     }
 
 
-def xml_file_to_json_file(xml_file: str, json_file: str) -> None:
+def xml_file_to_json_file(xml_file: str, json_file: str, metadata: dict | None) -> None:
     xml_string = Path(xml_file).read_text()
     try:
         transcript_dict = xml_to_podcast_dict(xml_string)
+        if metadata:
+            transcript_dict["metadata"] = metadata
     except InvalidXmlError as e:
         e.add_note(xml_file)
         raise

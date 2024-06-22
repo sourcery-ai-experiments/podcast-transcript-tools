@@ -56,16 +56,18 @@ def _select_transcript_paths(con: Connection) -> Iterable[tuple[str, dict[str, s
 
 
 def list_files_from_db(
-    db_path: str, ignore: list[str],
+    db_path: str,
+    ignore: list[str],
 ) -> tuple[list[str], dict[str, dict[str, str]]]:
     """List files from a database."""
-    with sqlite3.connect(db_path) as con:
     files = []
     metadatas = {}
-    for file, data in _select_transcript_paths(con):
-        if file in ignore:
-            continue
-        files.append(file)
-        metadatas[file] = data
-    con.close()
+
+    with sqlite3.connect(db_path) as con:
+        for file, data in _select_transcript_paths(con):
+            if file in ignore:
+                continue
+            files.append(file)
+            metadatas[file] = data
+
     return files, metadatas

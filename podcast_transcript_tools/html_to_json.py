@@ -74,10 +74,16 @@ def html_to_podcast_dict(html_string: str) -> dict:
     }
 
 
-def html_file_to_json_file(html_file: str, json_file: str) -> None:
+def html_file_to_json_file(
+    html_file: str,
+    json_file: str,
+    metadata: dict | None,
+) -> None:
     html_string = Path(html_file).read_text()
     try:
         transcript_dict = html_to_podcast_dict(html_string)
+        if metadata:
+            transcript_dict["metadata"] = metadata
     except InvalidHtmlError as e:
         e.add_note(html_file)
         raise
