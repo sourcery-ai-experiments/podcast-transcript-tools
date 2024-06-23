@@ -19,7 +19,7 @@ def main(source_path: str, objective_api_key: str) -> None:
     client = Client(api_key=objective_api_key)
     files = list_files(source_path, [])
     logger.info(f"Reading {len(files)} files")
-    objects = list(map(_read_json_and_map_id, files))
+    objects = [_read_json_and_map_id(file) for file in files]
     logger.info("Uploading objects")
     batch_results = client.object_store.upsert_objects(objects)
     logger.info(batch_results)
