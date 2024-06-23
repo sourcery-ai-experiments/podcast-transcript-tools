@@ -29,13 +29,13 @@ def main(source_path: str, objective_api_key: str) -> None:
 if __name__ == "__main__":
     if len(sys.argv) == 1:
         logger.error(
-            "Usage: up_obj <source dir> <obj. key or OBJECTIVE_KEY env var>",
+            "Usage: up_obj <source dir>\n"
+            "OBJECTIVE_KEY env var must be set to your API key.",
         )
         sys.exit(1)
 
     main(
         source_path=sys.argv[1],
-        objective_api_key=(
-            sys.argv[2] if len(sys.argv) == 3 else os.getenv("OBJECTIVE_KEY")  # noqa: PLR2004
-        ),
+        objective_api_key=os.getenv("OBJECTIVE_KEY")
+        or sys.exit("Error: OBJECTIVE_KEY not provided"),
     )
