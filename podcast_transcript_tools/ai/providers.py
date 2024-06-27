@@ -18,8 +18,9 @@ ai_providers_list = sorted(_ai_providers.keys())
 
 
 def get_env_keys() -> dict[str, str]:
-    return {
-        provider: environ.get(f"{provider.upper()}_API_KEY")
+    keys: dict[str, str] = {
+        provider: environ[f"{provider.upper()}_API_KEY"]
         for provider in ai_providers_list
-        if environ.get(f"{provider.upper()}_API_KEY") is not None
+        if environ[f"{provider.upper()}_API_KEY"].strip() != ""
     }
+    return keys
