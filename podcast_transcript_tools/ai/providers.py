@@ -24,4 +24,4 @@ def get_env_keys(providers: Iterable[str]) -> dict[str, str]:
         provider: environ[f"{provider.upper()}_API_KEY"].strip()
         for provider in providers
     }
-    return {k: v for k, v in keys.items() if v != ""}
+    return {k: v for k, v in keys.items() if v}
