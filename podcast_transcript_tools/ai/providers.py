@@ -1,4 +1,4 @@
-from collections.abc import Callable
+from collections.abc import Callable, Iterable
 from os import environ
 
 from podcast_transcript_tools.ai.api_calls import _call_anthropic, _call_openai
@@ -14,12 +14,12 @@ _ai_providers: dict[str, tuple[str, Callable[[str, str, str, float], str]]] = {
     ANTHROPIC: (ANTHROPIC_MODEL, _call_anthropic),
 }
 
-ai_providers_list = sorted(_ai_providers.keys())
+ai_providers_list: Iterable[str] = sorted(_ai_providers.keys())
 
 
 def get_env_keys() -> dict[str, str]:
     keys: dict[str, str] = {
-        provider: environ[f"{provider.upper()}_API_KEY"]
+        provider: environ[f"{provider.upper()}_API_KEY"].strip()
         for provider in ai_providers_list
         if environ[f"{provider.upper()}_API_KEY"].strip() != ""
     }
