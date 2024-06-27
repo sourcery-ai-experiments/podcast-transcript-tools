@@ -1,8 +1,6 @@
 import json
 from pathlib import Path
 
-from loguru import logger  # type: ignore[import-not-found]
-
 from podcast_transcript_tools.errors import NoStartTimeError
 
 
@@ -16,8 +14,8 @@ def _int_to_ts(seconds: int) -> str:
 def _segment_to_line(segment: dict) -> str:
     try:
         start_time = _int_to_ts(segment["startTime"])
-    except KeyError:
-        raise NoStartTimeError
+    except KeyError as e:
+        raise NoStartTimeError from e
     try:
         speaker = f"{segment["speaker"]}: "
     except KeyError:
