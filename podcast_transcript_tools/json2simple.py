@@ -4,16 +4,17 @@ from pathlib import Path
 from podcast_transcript_tools.errors import NoStartTimeError
 
 
-def _int_to_ts(seconds: int) -> str:
+def _number_to_ts(seconds: float) -> str:
+    seconds = int(seconds)
     hours = seconds // 3600
     minutes = (seconds % 3600) // 60
     seconds = seconds % 60
-    return f"{hours:02}:{minutes:02}:{seconds:02}"
+    return f"{hours:02d}:{minutes:02d}:{seconds:02d}"
 
 
 def _segment_to_line(segment: dict) -> str:
     try:
-        start_time = _int_to_ts(segment["startTime"])
+        start_time = _number_to_ts(segment["startTime"])
     except KeyError as e:
         raise NoStartTimeError from e
     try:

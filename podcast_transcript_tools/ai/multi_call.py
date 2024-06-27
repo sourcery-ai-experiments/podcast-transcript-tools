@@ -1,7 +1,7 @@
 from collections.abc import Iterable
 
-from podcast_transcript_tools.ai import DEFAULT
-from podcast_transcript_tools.ai.providers import ai_providers_list
+from .prompts import DEFAULT
+from .providers import _ai_providers, ai_providers_list
 
 
 def complete(
@@ -15,12 +15,11 @@ def complete(
     if keys is None:
         keys = {}
 
-    # TODO: make these calls parallel / async
     results = {}
 
     for provider in providers:
         prompt = prompts.get(provider) or prompts.get(DEFAULT)
-        model, call = providers[provider]
+        model, call = _ai_providers[provider]
         results[provider] = call(keys[provider], model, prompt, temperature)
 
     return results
