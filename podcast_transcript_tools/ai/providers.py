@@ -1,10 +1,11 @@
 from collections.abc import Callable, Iterable
 from os import environ
+from typing import TypeAlias
 
 from podcast_transcript_tools.ai.api_calls import _call_anthropic, _call_openai
 
 # provider, model, callable function
-type AI_CALL = tuple[str, str, Callable[[str, str, str, float], str]]
+AiCall: TypeAlias = tuple[str, str, Callable[[str, str, str, float], str]]
 
 OPENAI = "openai"
 ANTHROPIC = "anthropic"
@@ -12,7 +13,7 @@ ANTHROPIC = "anthropic"
 ANTHROPIC_MODEL = environ.get("ANTHROPIC_MODEL") or "claude-3-5-sonnet-20240620"
 GPT_MODEL = environ.get("GPT_MODEL") or "gpt-4o-2024-05-13"
 
-ai_calls: set[AI_CALL] = {
+ai_calls: set[AiCall] = {
     (OPENAI, GPT_MODEL, _call_openai),
     (ANTHROPIC, ANTHROPIC_MODEL, _call_anthropic),
 }

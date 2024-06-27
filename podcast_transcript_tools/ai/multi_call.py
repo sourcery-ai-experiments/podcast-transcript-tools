@@ -1,14 +1,14 @@
 from collections.abc import Iterable
 
 from .prompts import DEFAULT
-from .providers import AI_CALL, ai_calls, get_env_keys
+from .providers import AiCall, ai_calls, get_env_keys
 
 
 def complete(
     prompts: dict[str, str],
     keys: dict[str, str] | None = None,
     temperature: float = 0.6,
-    calls: Iterable[AI_CALL] | None = None,
+    calls: Iterable[AiCall] | None = None,
 ) -> dict[str, str]:
     if calls is None:
         calls = ai_calls

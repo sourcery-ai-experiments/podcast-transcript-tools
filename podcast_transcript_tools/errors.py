@@ -1,7 +1,7 @@
 class TranscriptConversionError(ValueError):
     """Base class for exceptions raised during transcript conversion."""
 
-    def __init__(self, message: str) -> None:
+    def __init__(self: "TranscriptConversionError", message: str) -> None:
         self.message = message
         super().__init__(message)
 
@@ -12,14 +12,14 @@ class InvalidHtmlError(TranscriptConversionError):
     Specifically, when there are no <cite> or <time> tags in the file.
     """
 
-    def __init__(self) -> None:
+    def __init__(self: "InvalidHtmlError") -> None:
         super().__init__("The provided HTML file is not a valid transcript.")
 
 
 class InvalidXmlError(TranscriptConversionError):
     """The XML does not conform to http://podlove.org/simple-transcripts ."""
 
-    def __init__(self) -> None:
+    def __init__(self: "InvalidXmlError") -> None:
         super().__init__("The provided XML file is not a valid transcript.")
 
 
@@ -29,7 +29,7 @@ class NoTranscriptFoundError(TranscriptConversionError):
     This may happen for an invalid or empty file.
     """
 
-    def __init__(self) -> None:
+    def __init__(self: "NoTranscriptFoundError") -> None:
         super().__init__(
             "The provided source does not contain a transcript or could not be parsed.",
         )
@@ -38,7 +38,7 @@ class NoTranscriptFoundError(TranscriptConversionError):
 class InvalidSrtError(TranscriptConversionError):
     """Failed to parse transcript blocks in the SRT."""
 
-    def __init__(self, block: str) -> None:
+    def __init__(self: "InvalidSrtError", block: str) -> None:
         self.block = block
         super().__init__(f"The provided SRT could not be parsed:\n{block}")
 
@@ -46,12 +46,12 @@ class InvalidSrtError(TranscriptConversionError):
 class InvalidVttError(TranscriptConversionError):
     """Failed to parse WebVTT."""
 
-    def __init__(self) -> None:
+    def __init__(self: "InvalidVttError") -> None:
         super().__init__("The provided VTT could not be parsed.")
 
 
 class NoStartTimeError(TranscriptConversionError):
     """Failed to find startTime in source transcript."""
 
-    def __init__(self) -> None:
+    def __init__(self: "NoStartTimeError") -> None:
         super().__init__("Failed to find startTime in source transcript.")
