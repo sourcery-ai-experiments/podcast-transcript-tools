@@ -48,3 +48,10 @@ class InvalidVttError(TranscriptConversionError):
 
     def __init__(self) -> None:
         super().__init__("The provided VTT could not be parsed.")
+
+
+class NoStartTimeError(TranscriptConversionError):
+    """Failed to find startTime in source transcript."""
+
+    def __init__(self) -> None:
+        super().__init__("Failed to find startTime in source transcript.")
