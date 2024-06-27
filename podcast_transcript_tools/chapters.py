@@ -7,14 +7,15 @@ from podcast_transcript_tools.ai import (
     complete,
     get_env_keys,
     prompt_transcript_to_chapters,
+    ai_providers,
 )
 from podcast_transcript_tools.json2simple import json_file_to_simple_file
 
 
 def create_chapters(transcript: str) -> dict[str, str]:
-    prompts = prompt_transcript_to_chapters(transcript)
-
-    return complete(prompts, get_env_keys())
+    return complete(
+        prompts=prompt_transcript_to_chapters(transcript),
+    )
 
 
 if __name__ == "__main__":
@@ -25,8 +26,9 @@ if __name__ == "__main__":
         source_path = Path(sys.argv[1].replace(".json", ".simple"))
         json_file_to_simple_file(sys.argv[1], source_path)
     else:
-        print("Please provide a sSRT transcript file")
+        print("Please provide a simple transcript file")
         sys.exit(1)
+
     chapters = create_chapters(Path(sys.argv[1]).read_text())
     for provider, suggestion in chapters.items():
         Path(str(source_path).replace(".simple", f".{provider}.chapters")).write_text(
