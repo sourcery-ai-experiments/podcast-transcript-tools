@@ -35,7 +35,7 @@ line-length = 88
 indent-width = 4
 
 lint.select = ["ALL"]
-lint.ignore = ["ANN101", "D100", "D101", "D103", "D104", "D105", "D107", "D203", "D213", "E203", "ERA001", "EXE001", "FBT001", "FIX002", "S113", "S314", "S608", "SIM300", "T201", "TD002", "TD003", "UP017"]
+lint.ignore = ["ANN101", "D100", "D101", "D103", "D104", "D105", "D107", "D203", "D213", "ERA001", "FBT001", "FIX002", "S314", "S608", "SIM300", "T201", "TD002", "TD003", "UP040"]
 target-version = "py312"
 
 [tool.ruff.format]
@@ -54,6 +54,7 @@ line-ending = "auto"
 [tool.ruff.lint.per-file-ignores]
 "tests/*" = ["ANN201", "E501", "PLR2004", "PT011", "S101"]
 "podcast_transcript_tools/html_to_json.py" = ["PLR0912"]
+"podcast_transcript_tools/ai/prompts.py" = ["E501"]
 
 [tool.pytest.ini_options]
 pythonpath = ". venv/lib/python3.12/site-packages"

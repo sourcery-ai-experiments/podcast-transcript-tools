@@ -39,6 +39,7 @@ def _select_transcript_paths(con: Connection) -> Iterable[tuple[str, dict[str, s
     Yields (transcript path, episode title, episode url,
     episode guid, feed title, feed xml)
     """
+    # TODO: get chapter info
     select = (
         f"SELECT {TRANSCRIPT_DL_PATH}, {EPISODES_EXTENDED}.{TITLE},  "
         f"{EPISODES_EXTENDED}.{ENCLOSURE_URL}, {EPISODES_EXTENDED}.{GUID}, "
