@@ -18,7 +18,7 @@ def _segment_to_line(segment: dict) -> str:
     except KeyError as e:
         raise NoStartTimeError from e
     try:
-        speaker = f"{segment["speaker"]}: "
+        speaker = f"{segment['speaker']}: "
     except KeyError:
         speaker = ""
     return f"({start_time}) {speaker}{segment['body']}"
