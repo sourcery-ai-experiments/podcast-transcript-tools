@@ -1,3 +1,4 @@
+import google.generativeai as gemini
 from anthropic import Anthropic
 from openai import OpenAI
 
@@ -23,3 +24,14 @@ def _call_openai(api_key: str, model: str, prompt: str, temperature: float) -> s
         messages=[{"role": "user", "content": prompt}],
     )
     return result.choices[0].message.content
+
+
+def _call_google(
+    api_key: str, model: str, prompt: str, temperature: float,  # noqa: ARG001
+) -> str:
+    gemini.configure(api_key=api_key)
+    model = gemini.GenerativeModel(model)
+
+    response = model.generate_content(prompt)
+
+    return response.text
