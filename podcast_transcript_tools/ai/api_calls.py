@@ -6,14 +6,14 @@ from openai import OpenAI
 def _call_anthropic(api_key: str, model: str, prompt: str, temperature: float) -> str:
     anthropic = Anthropic(api_key=api_key)
 
-    request = anthropic.messages.create(
+    result = anthropic.messages.create(
         model=model,
         max_tokens=3000,
         temperature=temperature,
         messages=[{"role": "user", "content": prompt}],
     )
 
-    return request.content[0].text
+    return result.content[0].text
 
 
 def _call_openai(api_key: str, model: str, prompt: str, temperature: float) -> str:
@@ -27,11 +27,14 @@ def _call_openai(api_key: str, model: str, prompt: str, temperature: float) -> s
 
 
 def _call_google(
-    api_key: str, model: str, prompt: str, temperature: float,  # noqa: ARG001
+    api_key: str,
+    model: str,
+    prompt: str,
+    temperature: float,  # noqa: ARG001
 ) -> str:
     gemini.configure(api_key=api_key)
-    model = gemini.GenerativeModel(model)
+    genai_model = gemini.GenerativeModel(model)
 
-    response = model.generate_content(prompt)
+    result = genai_model.generate_content(prompt)
 
-    return response.text
+    return result.text

@@ -2,7 +2,11 @@ from collections.abc import Callable, Iterable
 from os import environ
 from typing import TypeAlias
 
-from podcast_transcript_tools.ai.api_calls import _call_anthropic, _call_openai, _call_google
+from podcast_transcript_tools.ai.api_calls import (
+    _call_anthropic,
+    _call_google,
+    _call_openai,
+)
 
 # provider, model, callable function
 AiCall: TypeAlias = tuple[str, str, Callable[[str, str, str, float], str]]
