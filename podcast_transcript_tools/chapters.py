@@ -10,7 +10,7 @@ from podcast_transcript_tools.ai import (
 from podcast_transcript_tools.json2simple import json_file_to_simple_file
 
 
-def create_chapters(transcript: str) -> dict[str, str]:
+def create_chapters(transcript: str) -> dict[str, tuple[str | None, Exception | None]]:
     return complete(
         prompts=prompt_transcript_to_chapters(transcript),
     )
@@ -28,10 +28,18 @@ if __name__ == "__main__":
         sys.exit(1)
 
     chapters = create_chapters(Path(sys.argv[1]).read_text())
-    for provider, suggestion in chapters.items():
-        Path(str(source_path).replace(".simple", f".{provider}.chapters")).write_text(
-            suggestion,
+    for model_name, suggestion in chapters.items():
+        logger.warning(model_name)
+        if suggestion[1]:
+            logger.error(suggestion[1])
+            continue
+        Path(
+            str(source_path).replace(
+                ".simple",
+                f".{model_name.replace('.', '-')}.chapters",
+            ),
+        ).write_text(
+            suggestion[0],
         )
-        logger.warning(provider)
-        logger.info(suggestion)
+        logger.info(suggestion[0])
     # TODO: write out suggestions to DB
